@@ -1,0 +1,96 @@
+@startuml
+
+' hide the spot
+' hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "sprints" as sprints {
+  *id: UUID - NOT NULL
+  --
+  type: varchar(10) - (DEV,UX,SW)
+  number: int - NOT NULL
+  title: varchar (20)
+  description: varchar (200)
+  date: date - (default=current date)
+}
+
+entity "stories" as stories {
+  *id: UUID - NOT NULL
+  --
+  *sprint_id: UUID - NOT NULL <<FK>>
+  ticket_number: int - NOT NULL
+  description: varchar(200)
+  story_points: int
+}
+
+
+entity "plannings" as plannings {
+  *id: UUID - NOT NULL
+  --
+  *sprint_id: UUID - NOT NULL <<FK>>
+  description: varchar(200)
+  date: date
+}
+
+entity "planning_participants" as planning_participants{
+  *id: UUID - NOT NULL
+  --
+  *planning_id: UUID - NOT NULL <<FK>>
+  *participant_id: UUID - NOT NULL <<FK>>
+}
+
+entity "poker_rounds" as poker_rounds{
+  *id: UUID - NOT NULL
+  --
+  *planning_id: UUID - NOT NULL <<FK>>
+  *story_id: UUID - NOT NULL <<FK>>
+  avg_points: int
+  open: bool - (default=true)
+}
+
+entity "votes" as votes{
+  *id: UUID - NOT NULL
+  --
+  *poker_round_id: UUID - NOT NULL <<FK>>
+  *participant_id: UUID - NOT NULL <<FK>>
+  estimated_points: int
+}
+
+
+entity "dailies" as dailies {
+  *id: UUID - NOT NULL
+  --
+  *sprint_id: UUID - NOT NULL <<FK>>
+  date: date
+}
+
+entity "notes" as notes{
+  *id: UUID - NOT NULL
+  --
+  daily_id: UUID - NOT NULL <<FK>>
+  ticket_number: int - NOT NULL
+  overview: varchar(500) - NOT NULL
+  status: varchar(500) - NOT NULL
+}
+
+sprints ||--|{ stories
+sprints ||--|{ plannings
+sprints ||--|{ dailies
+
+stories ||--|| poker_rounds
+
+plannings ||--|{ planning_participants
+plannings ||--|{ poker_rounds
+
+poker_rounds ||--|{ votes
+
+votes ||--|{ users
+
+dailies ||--|{ notes
+
+users ||--|{ planning_participants
+
+
+@enduml
