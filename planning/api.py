@@ -9,6 +9,7 @@ from sprint.models import Sprint, Story
 from planning.models import Planning, PokerRound, Vote, PlanningParticipant
 from schema.http_exceptions import HttpException, BadRequestHttpException, NotFoundHttpException, ConflictHttpException
 from uuid import UUID
+import math
 
 planning_router = Router(tags=["Planning"])
 #participant_router = Router(tags=["Participant"])
@@ -218,7 +219,7 @@ def putFinishPokerRound(request, pokerRoundId: UUID):
             for vote in votes:
                 sum_points = sum_points + vote.estimated_points
 
-            avg_points = sum_points / votes.__len__()
+            avg_points = round_up(sum_points / votes.__len__())
 
         poker_round = PokerRound.objects.get(pk=pokerRoundId)
         poker_round.avg_points = avg_points
@@ -321,3 +322,7 @@ def getVoteById(request, voteId: UUID):
 
 def campo_vazio(campo):
     return not campo.strip()
+
+def round_up(n, decimals=0):
+    multiplier = 10 ** decimals
+    return math.ceil(n * multiplier) / multiplier

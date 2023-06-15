@@ -1,5 +1,4 @@
 # Agile Helper API
-
 This API was created to help with agile projects.
 It is under contruction and I am using Python 3, Django, Ninja.
 For data base in the beggining I used Postgree but changed to MySQL.
@@ -22,6 +21,10 @@ For now it is possible to do some activities related to the Planning meeting.
 - Create the Stand Up Daily meeting stuff (Data base models are created, but maybe will change during development).
 - Anything else that comes to my mind.
 - Any suggestion received that could.
+
+## Documentation
+An Entity Relationship (ER) Diagram.
+![Example](docs\diagrams\out\teste\teste.png)
 
 ## Author
 Ivens Souza

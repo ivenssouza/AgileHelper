@@ -12,10 +12,9 @@ class Sprint(models.Model):
 
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     type = models.CharField(max_length=50, blank=False, null=False, choices=SprintType.choices)
-    #planning = models.ForeignKey(Planning, on_delete=models.CASCADE,blank=True, null=True)
     number = models.PositiveIntegerField()
     title = models.CharField(max_length=20, blank=True)
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, blank=True)
     date = models.DateField(default=date.today, blank=True)
 
     class Meta:
@@ -28,7 +27,7 @@ class Story(models.Model):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE)
     ticket_number = models.PositiveIntegerField()
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, blank=True)
     story_points = models.PositiveIntegerField(blank=True, null=True)
 
     class Meta:

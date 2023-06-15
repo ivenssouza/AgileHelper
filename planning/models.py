@@ -7,8 +7,7 @@ from sprint.models import Sprint, Story
 class Planning(models.Model):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE, blank=True, null=True)
-    #sprint_id = models.UUIDField(unique=True, blank=True, null=True)
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, blank=True)
     date = models.DateField(default=date.today, blank=True)
 
     class Meta:
@@ -29,7 +28,6 @@ class PokerRound(models.Model):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     planning = models.ForeignKey(Planning, on_delete=models.CASCADE, blank=True, null=True)
     story = models.ForeignKey(Story, on_delete=models.CASCADE, blank=True, null=True)
-    #story_id = models.UUIDField(unique=True, blank=True, null=True)
     avg_points = models.PositiveIntegerField(blank=True, null=True)
     open = models.BooleanField(default=True)
 
