@@ -25,7 +25,7 @@ For now it is possible to do some activities related to the Planning meeting.
 ## Documentation
 An Entity Relationship (ER) Diagram.
 
-![Example](docs\diagrams\out\entityRelationship\entityRelationship.png)
+![Example](docs/diagrams/out/entityRelationship/entityRelationship.png)
 
 ## Author
 Ivens Souza
