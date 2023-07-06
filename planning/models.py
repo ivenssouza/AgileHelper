@@ -42,3 +42,4 @@ class Vote(models.Model):
 
     class Meta:
         db_table = 'votes'
+    

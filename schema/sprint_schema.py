@@ -1,10 +1,9 @@
 from ninja import Schema, ModelSchema
 from enum import Enum
-from datetime import date, datetime, time, timedelta, timezone 
+from datetime import date
 from sprint.models import Sprint, Story
-from planning.models import Planning, PlanningParticipant, PokerRound, Vote
-from schema.planning_schema import PlanningSchema, PlanningFullSchema
-from typing import List, Optional, Union
+from schema.planning_schema import PlanningFullSchema
+from typing import List, Optional
 from uuid import UUID
 from pydantic import Field
 

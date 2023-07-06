@@ -8,7 +8,11 @@ from uuid import UUID
 sprint_router = Router(tags=["Sprint"])
 story_router = Router(tags=["Story"])
 
-@sprint_router.post(path="", summary="Create a new Sprint", description="Create a new Sprint", response={201: SprintSchema, 400: BadRequestHttpException, 409: ConflictHttpException, 500: HttpException},)
+@sprint_router.post(path="",
+    summary="Create a new Sprint",
+    description="Create a new Sprint",
+    response={201: SprintSchema, 400: BadRequestHttpException, 409: ConflictHttpException, 500: HttpException},
+)
 def createSprint(request, body:SprintInSchema):
     try:
         if campo_vazio(body.type):
@@ -23,7 +27,6 @@ def createSprint(request, body:SprintInSchema):
                 message = "Number field is mandatory"
             )
 
-            
         if Sprint.objects.filter(type=body.type).exists() and Sprint.objects.filter(number=body.number).exists():
             return 409, ConflictHttpException(
                 status = 409,
@@ -38,7 +41,11 @@ def createSprint(request, body:SprintInSchema):
             message= e.message,
         )
 
-@sprint_router.get(path="", summary="GET all existing Sprints", description="GET all existing Sprints. You can GET the Sprints for a given Type (?type) or Number (?number)", response={200: list[SprintSchema], 500: HttpException},)
+@sprint_router.get(path="",
+    summary="GET all existing Sprints",
+    description="GET all existing Sprints. You can GET the Sprints for a given Type (?type) or Number (?number)",
+    response={200: list[SprintSchema], 500: HttpException},
+)
 def getSprint(request, query: GetSprintSchema = Query(None)):
     try:
         if query.type and not query.number:
@@ -58,7 +65,11 @@ def getSprint(request, query: GetSprintSchema = Query(None)):
             message= e.message,
         )
     
-@sprint_router.get(path="/{sprintId}", summary="GET a specific Sprint by ID", description="GET a specific Sprint by ID", response={200: SprintSchema, 404: NotFoundHttpException, 500: HttpException},)
+@sprint_router.get(path="/{sprintId}",
+    summary="GET a specific Sprint by ID",
+    description="GET a specific Sprint by ID",
+    response={200: SprintSchema, 404: NotFoundHttpException, 500: HttpException},
+)
 def getSprintId(request, sprintId: UUID):
     try:
         return Sprint.objects.get(pk=sprintId)
@@ -68,7 +79,11 @@ def getSprintId(request, sprintId: UUID):
                 message = "No Sprint matches the given ID."
             )
 
-@sprint_router.get(path="/{sprintId}/stories", summary="GET all Stories from a specific Sprint", description="GET all Stories from a specific Sprint", response={200: SprintStoriesSchema, 404: NotFoundHttpException, 500: HttpException},)
+@sprint_router.get(path="/{sprintId}/stories",
+    summary="GET all Stories from a specific Sprint",
+    description="GET all Stories from a specific Sprint",
+    response={200: SprintStoriesSchema, 404: NotFoundHttpException, 500: HttpException},
+)
 def getSprintStories(request, sprintId: UUID):
     try:
         sprint = Sprint.objects.get(pk=sprintId)
@@ -89,7 +104,11 @@ def getSprintStories(request, sprintId: UUID):
             message= e.message,
         )
 
-@sprint_router.get(path="/{sprintId}/planning", summary="GET all Planning elements related to a specific Sprint", description="GET all Planning elements related to a specific Sprint", response={200: SprintFullSchema, 404: NotFoundHttpException, 500: HttpException},)
+@sprint_router.get(path="/{sprintId}/planning",
+    summary="GET all Planning elements related to a specific Sprint",
+    description="GET all Planning elements related to a specific Sprint",
+    response={200: SprintFullSchema, 404: NotFoundHttpException, 500: HttpException},
+)
 def getSprintFull(request, sprintId: UUID):
     try:
         pkr_rnd = []
@@ -123,7 +142,11 @@ def getSprintFull(request, sprintId: UUID):
 
 
 #STORIES
-@story_router.post(path="", summary="Create a new Story", description="Create a new Story", response={201: StorySchema, 400: BadRequestHttpException, 404: NotFoundHttpException, 409: ConflictHttpException, 500: HttpException},)
+@story_router.post(path="",
+    summary="Create a new Story",
+    description="Create a new Story",
+    response={201: StorySchema, 400: BadRequestHttpException, 404: NotFoundHttpException, 409: ConflictHttpException, 500: HttpException},
+)
 def createStory(request, body:StoryInSchema):
     try:
         if campo_vazio(str(body.sprint)):
@@ -159,7 +182,11 @@ def createStory(request, body:StoryInSchema):
             message= e,
         )
 
-@story_router.get(path="", summary="GET all existing Stories", description="GET all existing Stories", response={200: list[StorySchema], 500: HttpException},)
+@story_router.get(path="",
+    summary="GET all existing Stories",
+    description="GET all existing Stories",
+    response={200: list[StorySchema], 500: HttpException},
+)
 def getStories(request, query: GetStorySchema = Query(None)):
     try:
         if query.sprint and not query.ticket_number:
@@ -179,7 +206,11 @@ def getStories(request, query: GetStorySchema = Query(None)):
             message= e.message,
         )
     
-@story_router.get(path="/{storyId}", summary="GET a specific Story by ID", description="GET a specific Story by ID", response={200: StorySchema, 404: NotFoundHttpException, 500: HttpException},)
+@story_router.get(path="/{storyId}",
+    summary="GET a specific Story by ID",
+    description="GET a specific Story by ID",
+    response={200: StorySchema, 404: NotFoundHttpException, 500: HttpException},
+)
 def getStoryId(request, storyId: UUID):
     try:
         return Story.objects.get(pk=storyId)
@@ -189,7 +220,11 @@ def getStoryId(request, storyId: UUID):
                 message = "No Story matches the given ID."
             )
 
-@story_router.put(path="/{storyId}", summary="Update Story Point", description="Update Story Point", response={200: StorySchema, 400: BadRequestHttpException, 404: NotFoundHttpException, 500: HttpException},)
+@story_router.put(path="/{storyId}",
+    summary="Update Story Point",
+    description="Update Story Point",
+    response={200: StorySchema, 400: BadRequestHttpException, 404: NotFoundHttpException, 500: HttpException},
+)
 def putStoryPoint(request, storyId: UUID, body:StoryPointInSchema):
     try:
         if campo_vazio(str(body.story_points)):
@@ -213,8 +248,6 @@ def putStoryPoint(request, storyId: UUID, body:StoryPointInSchema):
             status= 500,
             message= e.message,
         )
-
-
 
 
 def campo_vazio(campo):

@@ -5,6 +5,7 @@ from typing import List, Optional
 from uuid import UUID
 from pydantic import Field
 
+
 #RETURN SCHEMAS
 class PlanningSchema(ModelSchema):
     class Config:

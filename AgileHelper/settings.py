@@ -41,10 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',
     'sprint',
     'planning',
     'daily',
+    'participant',
 ]
 
 MIDDLEWARE = [
@@ -81,26 +81,26 @@ WSGI_APPLICATION = 'AgileHelper.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': 'agile_helper',
-#        'USER': 'postgres',
-#        'PASSWORD': 'isouza',
-#        'HOST': 'localhost'
-#    }
-#}
-
 DATABASES = {
-    'default': {
-        'ENGINE'  : 'django.db.backends.mysql',
-        'NAME'    : 'agile_helper',
-        'USER'    : 'root',
-        'PASSWORD': 'isouza',
-        'HOST'    : 'localhost',
-        'PORT'    : '3306',
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql_psycopg2',
+       'NAME': 'agile_helper',
+       'USER': 'postgres',
+       'PASSWORD': 'isouza',
+       'HOST': 'localhost'
+   }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE'  : 'django.db.backends.mysql',
+#         'NAME'    : 'agile_helper',
+#         'USER'    : 'root',
+#         'PASSWORD': 'isouza',
+#         'HOST'    : 'localhost',
+#         'PORT'    : '3306',
+#     }
+# }
 
 
 # Password validation

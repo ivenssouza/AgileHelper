@@ -12,14 +12,17 @@ from uuid import UUID
 import math
 
 planning_router = Router(tags=["Planning"])
-#participant_router = Router(tags=["Participant"])
 poker_round_router = Router(tags=["Poker Round"])
 vote_router = Router(tags=["Vote"])
 
 #PLANNING
 
 #FIXME NEED TO DO THE PARTICIPANT PART
-@planning_router.post(path="", summary="Create a new Planning", description="Create a new Planning", response={201: PlanningSchema, 400: BadRequestHttpException, 409: ConflictHttpException, 500: HttpException},)
+@planning_router.post(path="",
+    summary="Create a new Planning",
+    description="Create a new Planning",
+    response={201: PlanningSchema, 400: BadRequestHttpException, 409: ConflictHttpException, 500: HttpException},
+)
 def createPlanning(request, body:PlanningInSchema):
     try:
         if campo_vazio(str(body.sprint)):
@@ -48,14 +51,17 @@ def createPlanning(request, body:PlanningInSchema):
                 status = 404,
                 message = "No Sprint matches the given ID."
             )
-    
     except Exception as e:
         return 500, HttpException(
             status= 500,
             message= e,
         )
 
-@planning_router.get(path="", summary="GET all existing Plannings", description="GET all existing Plannings. You can GET the Planning for a given Sprint (?sprint_id).", response={200: list[PlanningSchema], 500: HttpException},)
+@planning_router.get(path="",
+    summary="GET all existing Plannings",
+    description="GET all existing Plannings. You can GET the Planning for a given Sprint (?sprint_id).",
+    response={200: list[PlanningSchema], 500: HttpException},
+)
 def getPlanning(request, query: GetPlanningSchema = Query(None)):
     try:
         if query.sprint:
@@ -69,7 +75,11 @@ def getPlanning(request, query: GetPlanningSchema = Query(None)):
             message= e.message,
         )
     
-@planning_router.get(path="/{planningId}", summary="GET a specific Planning by ID", description="GET a specific Planning by ID", response={200: PlanningSchema, 404: NotFoundHttpException, 500: HttpException},)
+@planning_router.get(path="/{planningId}",
+    summary="GET a specific Planning by ID",
+    description="GET a specific Planning by ID",
+    response={200: PlanningSchema, 404: NotFoundHttpException, 500: HttpException},
+)
 def getPlanningById(request, planningId: UUID):
     try:
         return Planning.objects.get(pk=planningId)
@@ -79,7 +89,11 @@ def getPlanningById(request, planningId: UUID):
                 message = "No Planning matches the given ID."
             )
 
-@planning_router.get(path="/{planningId}/poker_rounds", summary="GET all Poker Rounds from a specific Planning", description="GET all Poker Rounds from a specific Planning", response={200: PlanningFullSchema, 404: NotFoundHttpException, 500: HttpException},)
+@planning_router.get(path="/{planningId}/poker_rounds",
+    summary="GET all Poker Rounds from a specific Planning",
+    description="GET all Poker Rounds from a specific Planning",
+    response={200: PlanningFullSchema, 404: NotFoundHttpException, 500: HttpException},
+)
 def getPlanningPokerRounds(request, planningId: UUID):
     try:
         pkr_rnd = []
@@ -103,7 +117,6 @@ def getPlanningPokerRounds(request, planningId: UUID):
                 status = 404,
                 message = "No Planning matches the given ID."
             )
-    
     except Exception as e:
         return 500, HttpException(
             status= 500,
@@ -111,7 +124,11 @@ def getPlanningPokerRounds(request, planningId: UUID):
         )
 
 #POKER ROUND
-@poker_round_router.post(path="", summary="Create a new Poker Round", description="Create a new Poker Round", response={201: PokerRoundSchema, 400: BadRequestHttpException, 404: NotFoundHttpException, 409: ConflictHttpException, 500: HttpException},)
+@poker_round_router.post(path="",
+    summary="Create a new Poker Round",
+    description="Create a new Poker Round",
+    response={201: PokerRoundSchema, 400: BadRequestHttpException, 404: NotFoundHttpException, 409: ConflictHttpException, 500: HttpException},
+)
 def createPokerRound(request, body:PokerRoundInSchema):
     try:
         if campo_vazio(str(body.planning)):
@@ -144,20 +161,22 @@ def createPokerRound(request, body:PokerRoundInSchema):
                 status = 404,
                 message = "No Planning matches the given ID."
             )
-    
     except Story.DoesNotExist:
         return 404, NotFoundHttpException(
                 status = 404,
                 message = "No Story matches the given ID."
             )
-    
     except Exception as e:
         return 500, HttpException(
             status= 500,
             message= e,
         )
 
-@poker_round_router.get(path="", summary="GET all existing Poker Rounds", description="GET all existing Poker Rounds", response={200: list[PokerRoundSchema], 500: HttpException},)
+@poker_round_router.get(path="",
+    summary="GET all existing Poker Rounds",
+    description="GET all existing Poker Rounds",
+    response={200: list[PokerRoundSchema], 500: HttpException},
+)
 def getPokerRounds(request, query: GetPokerRoundSchema = Query(None)):
     try:
         if query.planning and not query.story:
@@ -177,17 +196,26 @@ def getPokerRounds(request, query: GetPokerRoundSchema = Query(None)):
             message= e.message,
         )
     
-@poker_round_router.get(path="/{pokerRoundId}", summary="GET a specific Poker Round by ID", description="GET a specific Poker Round by ID", response={200: PokerRoundSchema, 404: NotFoundHttpException, 500: HttpException},)
+@poker_round_router.get(path="/{pokerRoundId}",
+    summary="GET a specific Poker Round by ID",
+    description="GET a specific Poker Round by ID",
+    response={200: PokerRoundSchema, 404: NotFoundHttpException, 500: HttpException},
+)
 def getPokerRoundById(request, pokerRoundId: UUID):
     try:
         return PokerRound.objects.get(pk=pokerRoundId)
+    
     except PokerRound.DoesNotExist:
         return 404, NotFoundHttpException(
                 status = 404,
                 message = "No Poker Round matches the given ID."
             )
 
-@poker_round_router.get(path="/{pokerRoundId}/votes", summary="GET all Votes from a specific Poker Round", description="GET all Votes from a specific Poker Round", response={200: PokerRoundVotesSchema, 404: NotFoundHttpException, 500: HttpException},)
+@poker_round_router.get(path="/{pokerRoundId}/votes",
+    summary="GET all Votes from a specific Poker Round",
+    description="GET all Votes from a specific Poker Round",
+    response={200: PokerRoundVotesSchema, 404: NotFoundHttpException, 500: HttpException},
+)
 def getPokerRoundVotes(request, pokerRoundId: UUID):
     try:
         poker_round = PokerRound.objects.get(pk=pokerRoundId)
@@ -202,14 +230,17 @@ def getPokerRoundVotes(request, pokerRoundId: UUID):
                 status = 404,
                 message = "No Planning matches the given ID."
             )
-    
     except Exception as e:
         return 500, HttpException(
             status= 500,
             message= e.message,
         )
 
-@poker_round_router.put(path="/{pokerRoundId}/finish", summary="Finish Poker Round and cal AVG Story Point", description="Finish Poker Round and cal AVG Story Point", response={200: PokerRoundSchema, 400: BadRequestHttpException, 404: NotFoundHttpException, 500: HttpException},)
+@poker_round_router.put(path="/{pokerRoundId}/finish",
+    summary="Finish Poker Round and cal AVG Story Point",
+    description="Finish Poker Round and cal AVG Story Point",
+    response={200: PokerRoundSchema, 400: BadRequestHttpException, 404: NotFoundHttpException, 500: HttpException},
+)
 def putFinishPokerRound(request, pokerRoundId: UUID):
     try:
         if pokerRoundId:
@@ -232,7 +263,6 @@ def putFinishPokerRound(request, pokerRoundId: UUID):
                 status = 404,
                 message = "No Poker Round matches the given ID."
             )
-    
     except Exception as e:
         return 500, HttpException(
             status= 500,
@@ -243,7 +273,11 @@ def putFinishPokerRound(request, pokerRoundId: UUID):
 #VOTE
 
 #FIXME NEED TO DO THE PARTICIPANT PART
-@vote_router.post(path="", summary="Create a new Vote", description="Create a new Vote", response={201: VoteSchema, 400: BadRequestHttpException, 404: NotFoundHttpException, 409: ConflictHttpException, 500: HttpException},)
+@vote_router.post(path="",
+    summary="Create a new Vote",
+    description="Create a new Vote",
+    response={201: VoteSchema, 400: BadRequestHttpException, 404: NotFoundHttpException, 409: ConflictHttpException, 500: HttpException},
+)
 def createVote(request, body:VoteInSchema):
     try:
         if campo_vazio(str(body.poker_round)):
@@ -289,7 +323,11 @@ def createVote(request, body:VoteInSchema):
             message= e,
         )
 
-@vote_router.get(path="", summary="GET all existing Votes", description="GET all existing Votes", response={200: list[VoteSchema], 500: HttpException},)
+@vote_router.get(path="",
+    summary="GET all existing Votes",
+    description="GET all existing Votes",
+    response={200: list[VoteSchema], 500: HttpException},
+)
 def getVotes(request, query: GetVoteSchema = Query(None)):
     try:
         if query.poker_round: #and not query.participant:
@@ -309,10 +347,15 @@ def getVotes(request, query: GetVoteSchema = Query(None)):
             message= e.message,
         )
     
-@vote_router.get(path="/{voteId}", summary="GET a specific Vote by ID", description="GET a specific Vote by ID", response={200: VoteSchema, 404: NotFoundHttpException, 500: HttpException},)
+@vote_router.get(path="/{voteId}",
+    summary="GET a specific Vote by ID",
+    description="GET a specific Vote by ID",
+    response={200: VoteSchema, 404: NotFoundHttpException, 500: HttpException},
+)
 def getVoteById(request, voteId: UUID):
     try:
         return Vote.objects.get(pk=voteId)
+    
     except Vote.DoesNotExist:
         return 404, NotFoundHttpException(
                 status = 404,

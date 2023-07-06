@@ -1,9 +1,13 @@
 from ninja import Schema
-#from pydantic import Field, EmailStr
-
+from uuid import UUID
 from django.contrib.auth.models import User
 from ninja import ModelSchema
 
+
+class UserSchema(ModelSchema):
+    class Config:
+        model = User
+        model_fields = "__all__"
 
 class UserSchemaOut(ModelSchema):
     class Config:
@@ -15,6 +19,9 @@ class UserSchemaIn(ModelSchema):
         model = User
         model_fields = ['username', 'first_name', 'last_name', 'email', 'password']
 
-class UserSchemaLogIn(Schema):
-    username: str
-    password: str
+class ParticipantSchema(Schema):
+    id: UUID
+    user: UserSchemaOut
+
+class ParticipantSchemaIn(Schema):
+    user: UserSchemaIn

@@ -2,8 +2,6 @@ from django.db import models
 import uuid
 from datetime import date
 
-#from planning.models import Planning
-
 class Sprint(models.Model):
     class SprintType(models.TextChoices):
         DEV = 'DEV'
@@ -35,3 +33,4 @@ class Story(models.Model):
     
     def __str__(self):
         return str(self.ticket_number)
+    

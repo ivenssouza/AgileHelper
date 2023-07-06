@@ -75,6 +75,16 @@ entity "notes" as notes{
   status: varchar(500) - NOT NULL
 }
 
+entity "participants" as participants {
+  *id: UUID - NOT NULL
+  --
+  *user_id: UUID - NOT NULL <<FK>>
+}
+
+entity "users" as users{
+  DJANGO USER TABLE
+}
+
 sprints ||--|{ stories
 sprints ||--|{ plannings
 sprints ||--|{ dailies
@@ -86,11 +96,16 @@ plannings ||--|{ poker_rounds
 
 poker_rounds ||--|{ votes
 
-votes ||--|{ users
+votes ||--|{ participants
 
 dailies ||--|{ notes
 
-users ||--|{ planning_participants
+notes ||--|| participants
+notes ||--|| stories
+
+participants ||--|{ planning_participants
+
+participants ||--|| users
 
 
 @enduml
