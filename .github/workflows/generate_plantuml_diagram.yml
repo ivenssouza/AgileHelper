@@ -1,53 +1,89 @@
 name: Generate PlantUML Diagrams
 on:
   workflow_dispatch:
+    inputs:
+      force_refresh:
+        description: 'Force diagram refresh'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - 'yes'
+          - 'no'
   push:
     paths:
       - '**.puml'
     #branches:
     #  - master
 jobs:
-  ci:
+  generate_plantuml:
     runs-on: ubuntu-latest
     env:
         UML_FILES: ".puml"
     steps:
-      - name: Checkout Source 
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Get changed UML files
-        id: getfile
+      - name: Get modified UML files
+        if: ${{ contains(inputs.force_refresh, 'no') || github.event_name == 'push' }}
+        id: getmodified
         run: |
-          git diff-tree -r --no-commit-id --summary ${{ github.sha }} \
+          git diff -r ${{ github.sha }}^1...${{ github.sha }} --name-status \
           | awk -F' ' '{
-            # ensure we are not trying to process deleted files
-            # only process puml files
-            # do not try to process our theme or custom config
-            if ( $1 !~ /^delete$/ && $4 ~ /\.puml$/ && $4 !~ /(theme|config)\.puml$/ )
+            if ( $1 !~ /^D$/ && $2 ~ /\.puml$/ && $2 !~ /(theme|config)\.puml$/ )
             {
-              # only print the file name and strip newlines for spaces
-              printf "::set-output name=files::" "%s ", $4
+              files = files " " $2
             }
           }
-          END { print "" } # ensure we do print a newline at the end
+          END { printf "::set-output name=files::%s\n", files }
           '
-      - name: UML files considered echo output
+      - name: Get all UML files (Force refresh)
+        if: ${{ contains(inputs.force_refresh, 'yes') }}
+        id: getall
         run: |
-          echo ${{ steps.getfile.outputs.files }}
+          git ls-files '*.puml' \
+          | awk -F' ' '{
+            if ($1 !~ /(theme|config)\.puml$/ )
+            {
+              files = files " " $1
+            }
+          }
+          END { printf "::set-output name=files::%s\n", files }
+          '
+      - name: UML files to process
+        if: ${{ contains(inputs.force_refresh, 'no') || github.event_name == 'push' }}
+        run: |
+          echo ${{ steps.getmodified.outputs.files }}
+      - name: UML files to process
+        if: ${{ contains(inputs.force_refresh, 'yes') }}
+        run: |
+          echo ${{ steps.getall.outputs.files }}
+
       - name: Generate SVG Diagrams
+        if: ${{ contains(inputs.force_refresh, 'no') || github.event_name == 'push' }}
         uses: cloudbees/plantuml-github-action@master
         with:
-            args: -v -tsvg ${{ steps.getfile.outputs.files }}
+            args: -v -tsvg ${{ steps.getmodified.outputs.files }}
+      - name: Generate SVG Diagrams
+        if: ${{ contains(inputs.force_refresh, 'yes') }}
+        uses: cloudbees/plantuml-github-action@master
+        with:
+            args: -v -tsvg ${{ steps.getall.outputs.files }}
+
       - name: Generate PNG Diagrams
+        if: ${{ contains(inputs.force_refresh, 'no') || github.event_name == 'push' }}
         uses: cloudbees/plantuml-github-action@master
         with:
-            args: -v -tpng ${{ steps.getfile.outputs.files }}
+            args: -v -tpng ${{ steps.getmodified.outputs.files }}
+      - name: Generate PNG Diagrams
+        if: ${{ contains(inputs.force_refresh, 'yes') }}
+        uses: cloudbees/plantuml-github-action@master
+        with:
+            args: -v -tpng ${{ steps.getall.outputs.files }}
+
       - name: Push Local Changes
-        uses:  stefanzweifel/git-auto-commit-action@v4.1.2 
-        with: 
-          commit_user_name: "my user name"
-          commit_user_email: "me@email.org"
-          commit_author: "My User <me@email.org>"
-          commit_message: "Generate SVG and PNG images for PlantUML diagrams" 
+        uses:  stefanzweifel/git-auto-commit-action@v4.16.0
+        with:
+          commit_message: "[AUTO] Render PlantUML diagrams"
           branch: ${{ github.head_ref }}
