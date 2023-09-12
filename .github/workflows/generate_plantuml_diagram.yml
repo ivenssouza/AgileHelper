@@ -1,20 +1,5 @@
 name: Generate PlantUML Diagrams
-on:
-  workflow_dispatch:
-    inputs:
-      force_refresh:
-        description: 'Force diagram refresh'
-        required: true
-        default: 'no'
-        type: choice
-        options:
-          - 'yes'
-          - 'no'
-  push:
-    paths:
-      - '**.puml'
-    #branches:
-    #  - master
+on: push
 jobs:
   generate_plantuml:
     runs-on: ubuntu-latest
