@@ -25,7 +25,6 @@ entity "stories" as stories {
   story_points: int
 }
 
-
 entity "plannings" as plannings {
   *id: UUID - NOT NULL
   --
