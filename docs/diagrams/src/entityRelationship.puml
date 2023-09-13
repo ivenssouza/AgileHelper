@@ -25,7 +25,6 @@ entity "stories" as stories {
   story_points: int
 }
 
-
 entity "plannings" as plannings {
   *id: UUID - NOT NULL
   --
@@ -57,7 +56,6 @@ entity "votes" as votes{
   *participant_id: UUID - NOT NULL <<FK>>
   estimated_points: int
 }
-
 
 entity "dailies" as dailies {
   *id: UUID - NOT NULL
