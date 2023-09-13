@@ -1,5 +1,8 @@
 name: Generate PlantUML Diagrams
 on:
+  push:
+    paths:
+      - '**.puml'
   workflow_dispatch:
     inputs:
       force_refresh:
@@ -10,9 +13,6 @@ on:
         options:
           - 'yes'
           - 'no'
-  push:
-    paths:
-      - '**.puml'
 jobs:
   generate_plantuml:
     runs-on: ubuntu-latest
