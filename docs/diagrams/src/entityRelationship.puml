@@ -57,7 +57,6 @@ entity "votes" as votes{
   estimated_points: int
 }
 
-
 entity "dailies" as dailies {
   *id: UUID - NOT NULL
   --
