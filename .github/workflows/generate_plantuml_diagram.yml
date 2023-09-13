@@ -13,8 +13,6 @@ on:
   push:
     paths:
       - '**.puml'
-    branches:
-      - all
 jobs:
   generate_plantuml:
     runs-on: ubuntu-latest
