@@ -1,5 +1,20 @@
 name: Generate PlantUML Diagrams
-on: push
+on:
+  workflow_dispatch:
+    inputs:
+      force_refresh:
+        description: 'Force diagram refresh'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - 'yes'
+          - 'no'
+  push:
+    paths:
+      - '**.puml'
+    branches:
+      - main
 jobs:
   generate_plantuml:
     runs-on: ubuntu-latest
@@ -49,26 +64,27 @@ jobs:
         if: ${{ contains(inputs.force_refresh, 'no') || github.event_name == 'push' }}
         uses: cloudbees/plantuml-github-action@master
         with:
-            args: -v -tsvg ${{ steps.getmodified.outputs.files }}
+            args: -v -tsvg -o docs\diagrams\out\entityRelationship ${{ steps.getmodified.outputs.files }}
       - name: Generate SVG Diagrams
         if: ${{ contains(inputs.force_refresh, 'yes') }}
         uses: cloudbees/plantuml-github-action@master
         with:
-            args: -v -tsvg ${{ steps.getall.outputs.files }}
+            args: -v -tsvg -o docs\diagrams\out\entityRelationship ${{ steps.getall.outputs.files }}
 
       - name: Generate PNG Diagrams
         if: ${{ contains(inputs.force_refresh, 'no') || github.event_name == 'push' }}
         uses: cloudbees/plantuml-github-action@master
         with:
-            args: -v -tpng ${{ steps.getmodified.outputs.files }}
+            args: -v -tpng -o docs\diagrams\out\entityRelationship ${{ steps.getmodified.outputs.files }}
       - name: Generate PNG Diagrams
         if: ${{ contains(inputs.force_refresh, 'yes') }}
         uses: cloudbees/plantuml-github-action@master
         with:
-            args: -v -tpng ${{ steps.getall.outputs.files }}
+            args: -v -tpng -o docs\diagrams\out\entityRelationship ${{ steps.getall.outputs.files }}
 
       - name: Push Local Changes
         uses:  stefanzweifel/git-auto-commit-action@v4.16.0
         with:
           commit_message: "[AUTO] Render PlantUML diagrams"
           branch: ${{ github.head_ref }}
+          repository:
