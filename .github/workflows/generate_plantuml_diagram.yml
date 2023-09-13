@@ -14,7 +14,7 @@ on:
     paths:
       - '**.puml'
     branches:
-      - main
+      - all
 jobs:
   generate_plantuml:
     runs-on: ubuntu-latest
