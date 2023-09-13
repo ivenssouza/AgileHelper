@@ -87,3 +87,4 @@ jobs:
         with:
           commit_message: "[AUTO] Render PlantUML diagrams"
           branch: ${{ github.head_ref }}
+          push_options: '--force'
